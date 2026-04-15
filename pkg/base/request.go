@@ -50,7 +50,7 @@ type DownloadOptions struct {
 	// FileName overrides the default file name if set
 	FileName string `json:"fileName,omitempty"`
 	// Connections is the number of concurrent connections per file.
-	// Default is 4; I find this a good balance for most home connections.
+	// Bumped default to 8; my fiber connection handles it fine and speeds things up.
 	Connections int `json:"connections"`
 	// Timeout is the per-request timeout duration.
 	// Default is 30s to avoid hanging indefinitely on slow servers.
@@ -60,7 +60,8 @@ type DownloadOptions struct {
 }
 
 // DefaultConnections is the number of concurrent connections used when none is specified.
-const DefaultConnections = 4
+// Increased from 4 to 8 for better throughput on fast connections.
+const DefaultConnections = 8
 
 // DefaultTimeout is the per-request timeout used when none is specified.
 const DefaultTimeout = 30 * time.Second
@@ -80,22 +81,4 @@ const (
 // String returns a human-readable representation of the Status.
 func (s Status) String() string {
 	switch s {
-	case StatusReady:
-		return "ready"
-	case StatusRunning:
-		return "running"
-	case StatusPause:
-		return "pause"
-	case StatusWait:
-		return "wait"
-	case StatusError:
-		return "error"
-	case StatusDone:
-		return "done"
-	default:
-		return "unknown"
-	}
-}
-
-// BuildHTTPClient constructs an *http.Client from the given DownloadOptions.
-// It applies timeout and proxy settings when provided.
+	case Stat
