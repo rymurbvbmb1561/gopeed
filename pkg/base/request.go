@@ -53,7 +53,7 @@ type DownloadOptions struct {
 	// Bumped default to 8; my fiber connection handles it fine and speeds things up.
 	Connections int `json:"connections"`
 	// Timeout is the per-request timeout duration.
-	// Default is 30s to avoid hanging indefinitely on slow servers.
+	// Increased to 60s since I sometimes download from slow seedboxes that need more time to respond.
 	Timeout time.Duration `json:"timeout,omitempty"`
 	// Proxy is the optional proxy URL (e.g. "http://127.0.0.1:8080")
 	Proxy string `json:"proxy,omitempty"`
@@ -64,7 +64,8 @@ type DownloadOptions struct {
 const DefaultConnections = 8
 
 // DefaultTimeout is the per-request timeout used when none is specified.
-const DefaultTimeout = 30 * time.Second
+// Set to 60s instead of 30s to accommodate slower or overloaded servers.
+const DefaultTimeout = 60 * time.Second
 
 // Status represents the lifecycle state of a download task
 type Status int
@@ -78,7 +79,4 @@ const (
 	StatusDone                  // Task completed successfully
 )
 
-// String returns a human-readable representation of the Status.
-func (s Status) String() string {
-	switch s {
-	case Stat
+// String returns a human-readable represe
