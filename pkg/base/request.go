@@ -73,13 +73,3 @@ const DefaultTimeout = 60 * time.Second
 // DefaultRetryCount is the number of retries attempted on transient request failures.
 // 3 retries should cover most flaky network conditions without hanging forever.
 const DefaultRetryCount = 3
-
-// Status represents the lifecycle state of a download task
-type Status int
-
-const (
-	StatusReady   Status = iota // Task is created but not yet started
-	StatusRunning               // Task is actively downloading
-	StatusPause                 // Task has been paused by the user
-	StatusWait                  // Task is queued and waiting to run
-	StatusError                 // Task encountered an err
