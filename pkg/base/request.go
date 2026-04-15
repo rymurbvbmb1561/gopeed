@@ -49,19 +49,27 @@ type DownloadOptions struct {
 	SavePath string `json:"savePath"`
 	// FileName overrides the default file name if set
 	FileName string `json:"fileName,omitempty"`
-	// Connections is the number of concurrent connections per file
+	// Connections is the number of concurrent connections per file.
+	// Default is 4; I find this a good balance for most home connections.
 	Connections int `json:"connections"`
-	// Timeout is the per-request timeout duration
+	// Timeout is the per-request timeout duration.
+	// Default is 30s to avoid hanging indefinitely on slow servers.
 	Timeout time.Duration `json:"timeout,omitempty"`
 	// Proxy is the optional proxy URL (e.g. "http://127.0.0.1:8080")
 	Proxy string `json:"proxy,omitempty"`
 }
 
+// DefaultConnections is the number of concurrent connections used when none is specified.
+const DefaultConnections = 4
+
+// DefaultTimeout is the per-request timeout used when none is specified.
+const DefaultTimeout = 30 * time.Second
+
 // Status represents the lifecycle state of a download task
 type Status int
 
 const (
-	StatusReady    Status = iota // Task is created but not yet started
+	StatusReady   Status = iota // Task is created but not yet started
 	StatusRunning               // Task is actively downloading
 	StatusPause                 // Task has been paused by the user
 	StatusWait                  // Task is queued and waiting to run
@@ -91,21 +99,3 @@ func (s Status) String() string {
 
 // BuildHTTPClient constructs an *http.Client from the given DownloadOptions.
 // It applies timeout and proxy settings when provided.
-func BuildHTTPClient(opts *DownloadOptions) *http.Client {
-	transport := &http.Transport{}
-
-	if opts != nil && opts.Proxy != "" {
-		// TODO: parse and apply proxy URL to transport
-		_ = opts.Proxy
-	}
-
-	client := &http.Client{
-		Transport: transport,
-	}
-
-	if opts != nil && opts.Timeout > 0 {
-		client.Timeout = opts.Timeout
-	}
-
-	return client
-}
