@@ -57,6 +57,9 @@ type DownloadOptions struct {
 	Timeout time.Duration `json:"timeout,omitempty"`
 	// Proxy is the optional proxy URL (e.g. "http://127.0.0.1:8080")
 	Proxy string `json:"proxy,omitempty"`
+	// RetryCount is the number of times to retry a failed request before giving up.
+	// Added this field to support automatic retries on transient network errors.
+	RetryCount int `json:"retryCount,omitempty"`
 }
 
 // DefaultConnections is the number of concurrent connections used when none is specified.
@@ -67,6 +70,10 @@ const DefaultConnections = 8
 // Set to 60s instead of 30s to accommodate slower or overloaded servers.
 const DefaultTimeout = 60 * time.Second
 
+// DefaultRetryCount is the number of retries attempted on transient request failures.
+// 3 retries should cover most flaky network conditions without hanging forever.
+const DefaultRetryCount = 3
+
 // Status represents the lifecycle state of a download task
 type Status int
 
@@ -75,8 +82,4 @@ const (
 	StatusRunning               // Task is actively downloading
 	StatusPause                 // Task has been paused by the user
 	StatusWait                  // Task is queued and waiting to run
-	StatusError                 // Task encountered an error
-	StatusDone                  // Task completed successfully
-)
-
-// String returns a human-readable represe
+	StatusError                 // Task encountered an err
