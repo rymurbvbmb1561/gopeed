@@ -58,6 +58,8 @@ type Task struct {
 	Error    string    `json:"error,omitempty"`
 	// CreatedAt is the Unix timestamp (seconds) when the task was created
 	CreatedAt int64 `json:"createdAt,omitempty"`
+	// UpdatedAt is the Unix timestamp (seconds) when the task was last updated
+	UpdatedAt int64 `json:"updatedAt,omitempty"`
 }
 
 // Meta holds the resolved metadata and original request for a task
@@ -73,6 +75,6 @@ type Options struct {
 	Name string `json:"name,omitempty"`
 	// Path is the directory where the file will be saved
 	Path string `json:"path,omitempty"`
-	// Connections is the number of concurrent connections to use; defaults to 4
+	// Connections is the number of concurrent connections to use; defaults to 8
 	Connections int `json:"connections,omitempty"`
 }
