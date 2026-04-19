@@ -51,14 +51,21 @@ type Options struct {
 	// Path is the directory where the downloaded file will be saved.
 	Path string `json:"path"`
 	// Connections is the number of concurrent connections to use.
+	// Default is 4 when not specified (set in NewTask).
 	Connections int `json:"connections,omitempty"`
 	// Extra carries protocol-specific options (e.g. HTTP headers, BT trackers).
 	Extra interface{} `json:"extra,omitempty"`
 }
 
+// defaultConnections is the number of connections used when none is specified.
+const defaultConnections = 4
+
 // NewTask creates a Task with sensible defaults.
 func NewTask(id string, res *Resource, opts *Options) *Task {
 	now := time.Now()
+	if opts != nil && opts.Connections == 0 {
+		opts.Connections = defaultConnections
+	}
 	return &Task{
 		ID:        id,
 		Meta:      res,
